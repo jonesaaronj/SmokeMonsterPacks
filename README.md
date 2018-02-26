@@ -14,7 +14,7 @@ UTF-8 support
 
 Create an archive
 ```Bash
-build_pack -d "database location" -i "input_dir1" -i "input_dir2" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive"
+build_pack -d "database location" -i "input_dir" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive"
 ```
 
 Verify an archive
