@@ -14,14 +14,14 @@ UTF-8 support
 
 Create an archive
 ```Bash
-build_pack -d "database location" -i "input_dir1" -i "input_dir2" -i "input_file" -i "input_archive" -o "output_dir" -a "archive_file"
+build_pack -d "database location" -i "input_dir1" -i "input_dir2" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive"
 ```
 
 Verify an archive
 ```Bash
-build_pack -d "database_location" -i "archive_file"
+build_pack -d "database_location" -i "archive"
 ```
 Verify a directory
 ```Bash
-build_pack -d "database_location" -i "output_directory"
+build_pack -d "database_location" -i "directory"
 ```
