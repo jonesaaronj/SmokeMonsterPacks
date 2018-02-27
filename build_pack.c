@@ -1,6 +1,5 @@
 
 
-#include <ftw.h>
 #include <ctype.h>
 #include <errno.h>
 #include <limits.h>
@@ -18,7 +17,13 @@
 
 #include "vec/vec.h"
 #include "map/map.h"
-#include "mkdir_p/mkdir_p.h"
+
+#ifdef __linux__ 
+    #include <ftw.h>
+    #include "mkdir_p/mkdir_p.h"
+#elif _WIN32
+
+#endif
 
 const char *kPathSeparator =
 #ifdef _WIN32
