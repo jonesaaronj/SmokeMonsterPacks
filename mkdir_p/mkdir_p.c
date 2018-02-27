@@ -12,17 +12,11 @@ int mkdir_p(const char *path)
 {
     /* Adapted from http://stackoverflow.com/a/2336245/119527 */
     const size_t len = strlen(path);
-    char _path[PATH_MAX];
+    char _path[len];
     char *p; 
 
-    errno = 0;
-
-    /* Copy string so its mutable */
-    if (len > sizeof(_path)-1) {
-        errno = ENAMETOOLONG;
-        return -1; 
-    }   
     strcpy(_path, path);
+    errno = 0;
 
     /* Iterate the string */
     for (p = _path + 1; *p; p++) {

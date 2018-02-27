@@ -7,8 +7,8 @@
 #define MKDIR_H
 
 #include <string.h>
-#include <limits.h>     /* PATH_MAX */
-#include <sys/stat.h>   /* mkdir(2) */
+#include <linux/limits.h>     /* PATH_MAX */
+#include <sys/stat.h>         /* mkdir(2) */
 #include <errno.h>
 
 int mkdir_p(const char *path);
