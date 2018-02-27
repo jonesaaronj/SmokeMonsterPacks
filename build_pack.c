@@ -1,7 +1,9 @@
 
 #include <archive.h>
 #include <archive_entry.h>
+#include <ftw.h>
 #include <libgen.h>
+#include <limits.h>
 #include <locale.h>
 #include <openssl/sha.h>
 
@@ -9,9 +11,7 @@
 #include "map/map.h"
 
 #ifdef _WIN32
-    #include <glibc\ftw.h>
 #else
-    #include <ftw.h>
     #include "mkdir_p/mkdir_p.h"
 #endif
 

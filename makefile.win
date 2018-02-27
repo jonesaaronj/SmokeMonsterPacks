@@ -1,10 +1,10 @@
 all: build_pack.exe
 
 build_pack.exe: build_pack.o
-	gcc -o build_pack.exe build_pack.o
+	gcc -w -o build_pack.exe build_pack.o
 
 build_pack.o: build_pack.c
-	gcc -c build_pack.c .\vec\vec.c .\map\map.c .\mkdir_p\mkdir_p.c -I 'C:\Program Files (x86)\GnuWin32\include\'
+	gcc -w -c build_pack.c .\vec\vec.c .\map\map.c .\mkdir_p\mkdir_p.c -I 'C:\Program Files (x86)\GnuWin32\include\' -I 'C:\Program Files (x86)\GnuWin32\include\glibc\'
 
 clean:
 	rm build_pack.o build_pack.exe
