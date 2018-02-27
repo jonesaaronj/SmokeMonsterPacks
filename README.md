@@ -1,13 +1,13 @@
 # SmokeMonsterPacks
-Create smokemonster rom packs with the ability to read directy from and to an archive (7z, zip, ...)
+Create smokemonster rom packs from a database file and a collection of roms with the ability to read directy from and/or to an archive (7z, zip, ...)
 
 ## Goal
 An alternative tool for building smokemonster rom packs based on the following source
 https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 
 * Archive support using libarchive
-** All formats supported by libarchive are supported for input (Single level deep support only)
-** Currently only 7z and zip are supported for output
+** All formats supported by libarchive are supported for input (Single level deep archives only, Can't read a zip inside a zip for example)
+** Currently only 7z and zip format are supported for output
 * Multiple input sources
 * Simultaneous output to folder and archive
 * UTF-8 support
