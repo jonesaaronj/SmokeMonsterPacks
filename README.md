@@ -5,12 +5,12 @@ Create smokemonster rom packs from a database file and a collection of roms with
 An alternative tool for building smokemonster rom packs based on the following source
 https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 
-* Archive support using libarchive
-** All formats supported by libarchive are supported for input (Single level deep archives only, Can't read a zip inside a zip for example)
-** Currently only 7z and zip format are supported for output
-* Multiple input sources
-* Simultaneous output to folder and archive
-* UTF-8 support
++ Archive support using libarchive
+  + Currently zip, rar, and 7z are supported for input (Single level deep archives only, Can't read a zip inside a zip for example)
+  + Currently zip and 7z are supported for output
++ Multiple input sources
++ Simultaneous output to folder and archive
++ UTF-8 support
 
 ## TODO
 * It would be nice to figure out windows support
@@ -25,14 +25,14 @@ See full usage
 build_pack -h
 ```
 
-Create an archive
+Create a zip archive and also output to a directory
 ```Bash
-build_pack -d "database location" -i "input_dir" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive"
+build_pack -d "database location" -i "input_dir" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive.zip"
 ```
 
 Verify an existing archive (This only verifies the file exists and has the correct hash.  It does not verify it is in the correct location)
 ```Bash
-build_pack -d "database_location" -i "archive"
+build_pack -d "database_location" -i "archive.7z"
 ```
 Verify an existing directory (This only verifies the file exists and has the correct hash.  It does not verify it is in the correct location)
 ```Bash
