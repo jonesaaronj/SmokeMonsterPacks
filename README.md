@@ -1,17 +1,20 @@
 # SmokeMonsterPacks
-create smokemonster rom packs with the ability to read directy from and to an archive
+Create smokemonster rom packs with the ability to read directy from and to an archive (7z, zip, ...)
 
 ## Goal
 An alternative tool for building smokemonster rom packs based on the following source
 https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 
 * Archive support using libarchive
+** All formats supported by libarchive are supported for input (Single level deep support only)
+** Currently only 7z and zip are supported for output
 * Multiple input sources
 * Simultaneous output to folder and archive
 * UTF-8 support
 
 ## TODO
 * It would be nice to figure out windows support
+* Support more output archive types, maybe, what would anyone want besides 7z and zip?
 * Writing to 7z seems to have some issues that need to be fixed (Reading from 7z seems fine)
 * If you try to verify a zip file with unzip you get Extra-Field errors.  It verifies fine in 7z so this might be an issue with unzip and not libarchive
 
