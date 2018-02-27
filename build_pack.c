@@ -26,10 +26,10 @@
 #endif
 
 const char *kPathSeparator =
-#ifdef _WIN32
-    "\\";
-#else
+#ifdef __linux__ 
     "/";
+#elif _WIN32
+    "\\";
 #endif
 
 typedef map_t(vec_str_t) map_vec_str_t;
