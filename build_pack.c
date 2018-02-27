@@ -1,18 +1,16 @@
 
-
-#include <locale.h>
-
-#include <openssl/sha.h>
 #include <archive.h>
 #include <archive_entry.h>
+#include <ftw.h>
+#include <libgen.h>
+#include <locale.h>
+#include <openssl/sha.h>
 
 #include "vec/vec.h"
 #include "map/map.h"
 
 #ifdef _WIN32
 #else
-    #include <libgen.h>
-    #include <ftw.h>
     #include "mkdir_p/mkdir_p.h"
 #endif
 
