@@ -10,6 +10,11 @@ https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 * Simultaneous output to folder and archive
 * UTF-8 support
 
+## TODO
+* It would be nice to figure out windows support
+* Writing to 7z seems to have some issues that need to be fixed (Reading from 7z seems fine)
+* If you try to verify a zip file with unzip you get Extra-Field errors.  It verifies fine in 7z so this might be an issue with unzip and not libarchive
+
 ## Example usage
 
 Create an archive
@@ -25,3 +30,12 @@ Verify a directory
 ```Bash
 build_pack -d "database_location" -i "directory"
 ```
+# Build
+
+## Linux
+A makefile is provided for building in linux  
+Install libarchive  
+cd to the directory and run 'make'  
+
+## Windows
+TBDT
