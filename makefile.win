@@ -4,7 +4,7 @@ build_pack.exe: build_pack.o
 	gcc -o build_pack.exe build_pack.o
 
 build_pack.o: build_pack.c
-	gcc -c build_pack.c .\vec\vec.c .\map\map.c .\mkdir_p\mkdir_p.c
+	gcc -c build_pack.c .\vec\vec.c .\map\map.c .\mkdir_p\mkdir_p.c -I 'C:\Program Files (x86)\GnuWin32\include\'
 
 clean:
 	rm build_pack.o build_pack.exe
