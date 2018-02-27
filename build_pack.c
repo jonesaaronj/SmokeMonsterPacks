@@ -1,15 +1,6 @@
 
 
-#include <ctype.h>
-#include <errno.h>
-#include <limits.h>
-#include <libgen.h>
 #include <locale.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
 #include <openssl/sha.h>
 #include <archive.h>
@@ -18,18 +9,18 @@
 #include "vec/vec.h"
 #include "map/map.h"
 
-#ifdef __linux__ 
+#ifdef _WIN32
+#else
+    #include <libgen.h>
     #include <ftw.h>
     #include "mkdir_p/mkdir_p.h"
-#elif _WIN32
-
 #endif
 
 const char *kPathSeparator =
-#ifdef __linux__ 
-    "/";
-#elif _WIN32
+#ifdef _WIN32
     "\\";
+#else
+    "/";
 #endif
 
 typedef map_t(vec_str_t) map_vec_str_t;
