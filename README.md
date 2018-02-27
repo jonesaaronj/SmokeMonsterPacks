@@ -1,5 +1,5 @@
 # SmokeMonsterPacks
-smokemonster rom packs with archive support
+create smokemonster rom packs with the ability to read directy from and to an archive
 
 ## Goal
 An alternative tool for building smokemonster rom packs based on the following source
@@ -17,16 +17,21 @@ https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 
 ## Example usage
 
+See full usage
+```Bash
+build_pack -h
+```
+
 Create an archive
 ```Bash
 build_pack -d "database location" -i "input_dir" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive"
 ```
 
-Verify an archive
+Verify an existing archive (This only verifies the file exists and has the correct hash.  It does not verify it is in the correct location)
 ```Bash
 build_pack -d "database_location" -i "archive"
 ```
-Verify a directory
+Verify an existing directory (This only verifies the file exists and has the correct hash.  It does not verify it is in the correct location)
 ```Bash
 build_pack -d "database_location" -i "directory"
 ```
