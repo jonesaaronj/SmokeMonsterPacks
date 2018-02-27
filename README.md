@@ -5,10 +5,10 @@ smokemonster rom packs with archive support
 An alternative tool for building smokemonster rom packs based on the following source
 https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 
-Archive support using libarchive
-Multiple input sources
-Simultaneous output to folder and archive
-UTF-8 support
+* Archive support using libarchive
+* Multiple input sources
+* Simultaneous output to folder and archive
+* UTF-8 support
 
 ## Example usage
 
