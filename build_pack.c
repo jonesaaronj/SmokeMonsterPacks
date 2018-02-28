@@ -253,7 +253,7 @@ int create_db(const char *file, map_vec_str_t *db) {
 
         entries++;
         char *sha256 = strlwr(strtok(line, "\t"));
-        char *entry  = strlwr(strtok(NULL, "\t"));
+        char *entry  = strtok(NULL, "\t");
         char *sha1   = strlwr(strtok(NULL, "\t"));
         char *md5    = strlwr(strtok(NULL, "\t"));
         char *crc32  = strlwr(strtok(NULL, "\t"));
