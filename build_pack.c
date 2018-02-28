@@ -5,8 +5,8 @@
 #include <libgen.h>
 #include <limits.h>
 #include <locale.h>
-#include <openssl/sha.h>
 
+#include "hash.h"
 #include "log/log.h"
 #include "map/map.h"
 #include "vec/vec.h"
@@ -75,23 +75,6 @@ void close_archive(struct archive *a) {
         log_error("%s", archive_error_string(a));
 }
 
-void sha256_hash_string(const unsigned char hash[SHA256_DIGEST_LENGTH], char output[65]) {
-    int i = 0;
-    for (i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-        sprintf(output + (i * 2), "%02x", hash[i]);
-    }
-    output[64] = 0;
-}
-
-void calculate_sha256(const unsigned char *buffer, const int size, char output[65]) {
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, buffer, size);
-    SHA256_Final(hash, &sha256);
-    sha256_hash_string(hash, output);
-}
-
 void handle_to_folder(const unsigned char *buffer, const int size, char *output_folder, char *output_entry) {
     char output_path[PATH_MAX];
     strcpy(output_path, output_folder);
@@ -126,11 +109,14 @@ int handle_archive(map_vec_str_t *db, int *found, const char *input_archive, cha
         unsigned char *buffer = malloc(size);
         archive_read_data(a, buffer, size);
 
-        char *sha256 = malloc(65);
-        calculate_sha256(buffer, size, sha256);
+        char *sha256 = calculate_sha256(buffer, size);
+        char *sha1 = calculate_sha1(buffer, size);
+        char *md5 = calculate_md5(buffer, size);
          
         log_trace("entry: %s", entry_pathname);
         log_trace("sha256: %s", sha256);
+        log_trace("sha1: %s", sha1);
+        log_trace("md5:  %s", md5);
         log_trace("size: %d", size);
         
         vec_str_t *output_entries = map_get(db, sha256);
@@ -154,6 +140,8 @@ int handle_archive(map_vec_str_t *db, int *found, const char *input_archive, cha
         }
         free(buffer);
         free(sha256);
+        free(sha1);
+        free(md5);
     }
     log_debug("%d entries matched in %s", found_in_archive, input_archive);
 
@@ -177,11 +165,14 @@ int handle_file(map_vec_str_t *db, int *found, const char *file_in, char *output
     fread(buffer, size, 1, f);
     fclose(f);
 
-    char *sha256 = malloc(65);
-    calculate_sha256(buffer, size, sha256);
+    char *sha256 = calculate_sha256(buffer, size);
+    char *sha1 = calculate_sha1(buffer, size);
+    char *md5 = calculate_md5(buffer, size);
    
     log_trace("Size: %d", size);
-    log_trace("SHA256: %s", sha256);
+    log_trace("sha256: %s", sha256);
+    log_trace("sha1: %s", sha1);
+    log_trace("md5: %s", md5);
 
     vec_str_t *output_entries = map_get(db, sha256);
     if (output_entries != NULL) {
@@ -204,6 +195,8 @@ int handle_file(map_vec_str_t *db, int *found, const char *file_in, char *output
 
     free(buffer);
     free(sha256);
+    free(sha1);
+    free(md5);
 }
 
 void print_vec_str_map(map_vec_str_t *m, const char *key_label, const char *entry_label, int level){
