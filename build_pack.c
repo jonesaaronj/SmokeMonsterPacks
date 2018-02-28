@@ -1,6 +1,7 @@
 
 #include <archive.h>
 #include <archive_entry.h>
+#include <ctype.h>
 #include <ftw.h>
 #include <libgen.h>
 #include <limits.h>
@@ -24,6 +25,15 @@ const char *kPathSeparator =
 #endif
 
 typedef map_t(vec_str_t) map_vec_str_t;
+
+char *strlwr(char *str){
+  unsigned char *p = (unsigned char *)str;
+  while (*p) {
+     *p = tolower((unsigned char)*p);
+      p++;
+  }
+  return str;
+}
 
 int copy_to_file(const unsigned char *buffer, const int size, char *file) {
     char *tmp = strdup(file);
@@ -112,12 +122,14 @@ int handle_archive(map_vec_str_t *db, int *found, const char *input_archive, cha
         char *sha256 = sha256_buffer(buffer, size);
         char *sha1 = sha1_buffer(buffer, size);
         char *md5 = md5_buffer(buffer, size);
+        char *crc32 = crc32_buffer(buffer, size);
          
         log_trace("entry: %s", entry_pathname);
+        log_trace("size: %d", size);
         log_trace("sha256: %s", sha256);
         log_trace("sha1: %s", sha1);
         log_trace("md5:  %s", md5);
-        log_trace("size: %d", size);
+        log_trace("crc32: %s", crc32);
         
         vec_str_t *output_entries = map_get(db, sha256);
         if (output_entries != NULL) {
@@ -142,6 +154,7 @@ int handle_archive(map_vec_str_t *db, int *found, const char *input_archive, cha
         free(sha256);
         free(sha1);
         free(md5);
+        free(crc32);
     }
     log_debug("%d entries matched in %s", found_in_archive, input_archive);
 
@@ -168,11 +181,13 @@ int handle_file(map_vec_str_t *db, int *found, const char *file_in, char *output
     char *sha256 = sha256_buffer(buffer, size);
     char *sha1 = sha1_buffer(buffer, size);
     char *md5 = md5_buffer(buffer, size);
+    char *crc32 = crc32_buffer(buffer, size);
    
-    log_trace("Size: %d", size);
+    log_trace("size: %d", size);
     log_trace("sha256: %s", sha256);
     log_trace("sha1: %s", sha1);
     log_trace("md5: %s", md5);
+    log_trace("crc32: %s", crc32);
 
     vec_str_t *output_entries = map_get(db, sha256);
     if (output_entries != NULL) {
@@ -197,6 +212,7 @@ int handle_file(map_vec_str_t *db, int *found, const char *file_in, char *output
     free(sha256);
     free(sha1);
     free(md5);
+    free(crc32);
 }
 
 void print_vec_str_map(map_vec_str_t *m, const char *key_label, const char *entry_label, int level){
@@ -236,11 +252,11 @@ int create_db(const char *file, map_vec_str_t *db) {
         if (read <= 0) break;
 
         entries++;
-        char *sha256 = strtok(line, "\t");
-        char *entry  = strtok(NULL, "\t");
-        char *sha1   = strtok(NULL, "\t");
-        char *md5    = strtok(NULL, "\t");
-        char *crc    = strtok(NULL, "\t");
+        char *sha256 = strlwr(strtok(line, "\t"));
+        char *entry  = strlwr(strtok(NULL, "\t"));
+        char *sha1   = strlwr(strtok(NULL, "\t"));
+        char *md5    = strlwr(strtok(NULL, "\t"));
+        char *crc32  = strlwr(strtok(NULL, "\t"));
         
         vec_str_t *val = map_get(db, sha256);
         if (val == NULL ) {

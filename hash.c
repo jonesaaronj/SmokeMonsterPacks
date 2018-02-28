@@ -9,8 +9,22 @@ char* buffer_to_hex(const unsigned char *buffer, const int size) {
     for (i = 0; i < size; i++) {
         sprintf(hex + (i * 2), "%02x", buffer[i]); 
     }
-    hex[(size * 2) + 1] = 0;
+    hex[(sizeof(char) * size * 2) + 1] = 0;
     return hex;
+}
+
+char* ulong_to_hex(ulong buffer) {
+    char *hex = malloc((sizeof(ulong) * 2) + 1);
+    sprintf(hex, "%08x", buffer);
+    hex[(sizeof(ulong) * 2) + 1];
+    return hex;
+}
+
+char* crc32_buffer(const unsigned char *buffer, const int size) {
+    ulong crc = crc32(0L, Z_NULL, 0);
+    crc = crc32(crc, buffer, size);
+    crc = crc & 0xffffffff;
+    return ulong_to_hex(crc);
 }
 
 char* md5_buffer(const unsigned char *buffer, const int size) {
@@ -29,6 +43,22 @@ char* sha256_buffer(const unsigned char *buffer, const int size) {
     unsigned char sha256[SHA256_DIGEST_LENGTH];
     SHA256(buffer, size, sha256);
     return buffer_to_hex(sha256, SHA256_DIGEST_LENGTH);
+}
+
+char* crc32_file(const char *file) {
+    FILE* f = fopen(file, "rb");
+    if (!f)
+        log_error("Could not open %s", file);
+
+    unsigned char buffer[BUFFER_SIZE];
+    uLong crc = crc32(0L, Z_NULL, 0);
+    int read = 0;
+    while ((read = fread(buffer, 1, BUFFER_SIZE, f)) !=  0)
+        crc = crc32(crc, buffer, read);
+    crc = crc & 0xffffffff;
+
+    fclose(f);
+    return ulong_to_hex(crc);
 }
 
 char* md5_file(const char *file) {
