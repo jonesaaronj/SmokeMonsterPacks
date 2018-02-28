@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <locale.h>
 
-#include "hash.h"
+#include "hash/hash.h"
 #include "log/log.h"
 #include "map/map.h"
 #include "vec/vec.h"

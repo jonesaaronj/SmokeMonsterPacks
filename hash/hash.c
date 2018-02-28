@@ -1,5 +1,4 @@
 #include "hash.h"
-#include "log/log.h"
 
 #define BUFFER_SIZE 4096
 
