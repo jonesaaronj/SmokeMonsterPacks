@@ -109,9 +109,9 @@ int handle_archive(map_vec_str_t *db, int *found, const char *input_archive, cha
         unsigned char *buffer = malloc(size);
         archive_read_data(a, buffer, size);
 
-        char *sha256 = calculate_sha256(buffer, size);
-        char *sha1 = calculate_sha1(buffer, size);
-        char *md5 = calculate_md5(buffer, size);
+        char *sha256 = sha256_buffer(buffer, size);
+        char *sha1 = sha1_buffer(buffer, size);
+        char *md5 = md5_buffer(buffer, size);
          
         log_trace("entry: %s", entry_pathname);
         log_trace("sha256: %s", sha256);
@@ -165,9 +165,9 @@ int handle_file(map_vec_str_t *db, int *found, const char *file_in, char *output
     fread(buffer, size, 1, f);
     fclose(f);
 
-    char *sha256 = calculate_sha256(buffer, size);
-    char *sha1 = calculate_sha1(buffer, size);
-    char *md5 = calculate_md5(buffer, size);
+    char *sha256 = sha256_buffer(buffer, size);
+    char *sha1 = sha1_buffer(buffer, size);
+    char *md5 = md5_buffer(buffer, size);
    
     log_trace("Size: %d", size);
     log_trace("sha256: %s", sha256);

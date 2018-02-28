@@ -6,9 +6,9 @@
 #include <openssl/md5.h>
 #include <openssl/sha.h>
 
-char* buffer_to_hex(const unsigned char *buffer, int size);
-char* calculate_md5(const unsigned char *buffer, const int size);
-char* calculate_sha1(const unsigned char *buffer, const int size);
-char* calculate_sha256(const unsigned char *buffer, const int size);
+char* buffer_to_hex(const unsigned char *buffer, const int size);
+char* md5_buffer(const unsigned char *buffer, const int size);
+char* sha1_buffer(const unsigned char *buffer, const int size);
+char* sha256_buffer(const unsigned char *buffer, const int size);
 
 #endif
