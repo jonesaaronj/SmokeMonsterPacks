@@ -9,16 +9,29 @@
 
 #include "../log/log.h"
 
-char* buffer_to_hex(const unsigned char *buffer, const int size);
+typedef struct {
+    char* sha256;
+    char* sha1;
+    char* md5;
+    char* crc32;
+} Hash;
 
-char* crc32_buffer(const unsigned char *buffer, const int size);
-char* md5_buffer(const unsigned char *buffer, const int size);
-char* sha1_buffer(const unsigned char *buffer, const int size);
-char* sha256_buffer(const unsigned char *buffer, const int size);
 
-char* crc32_file(const char *file);
-char* md5_file(const char *file);
-char* sha1_file(const char *file);
-char* sha256_file(const char *file);
+Hash* create_hash(char* sha256, char* sha1, char* md5, char* crc32);
+void free_hash(Hash* hash);
+
+char* buffer_to_hex(const unsigned char* buffer, const int size);
+
+char* get_buffer_crc32(const unsigned char* buffer, const int size);
+char* get_buffer_md5(const unsigned char* buffer, const int size);
+char* get_buffer_sha1(const unsigned char* buffer, const int size);
+char* get_buffer_sha256(const unsigned char* buffer, const int size);
+Hash* get_buffer_hash(const unsigned char* buffer, const int size);
+
+char* get_file_crc32(const char* file);
+char* get_file_md5(const char* file);
+char* get_file_sha1(const char* file);
+char* get_file_sha256(const char* file);
+Hash* get_file_hash(const char* file);
 
 #endif
