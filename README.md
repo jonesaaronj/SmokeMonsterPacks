@@ -22,22 +22,33 @@ https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 
 See full usage
 ```Bash
-build_pack -h
+smp -h
 ```
 
 Create a zip archive and also output to a directory
 ```Bash
-build_pack -d "database location" -i "input_dir" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive.zip"
+smp -d "database_location" -i "input_dir" -i "input_file" -i "input_archive" -o "output_dir" -a "output_archive.zip"
 ```
 
 Verify an existing archive (This only verifies the file exists and has the correct hash.  It does not verify it is in the correct location)
 ```Bash
-build_pack -d "database_location" -i "archive.7z"
+smp -d "database_location" -i "archive.7z"
 ```
 Verify an existing directory (This only verifies the file exists and has the correct hash.  It does not verify it is in the correct location)
 ```Bash
-build_pack -d "database_location" -i "directory"
+smp -d "database_location" -i "directory"
 ```
+
+Create a database file from a directory
+```
+smp -D "databse_location" -P "directory"
+```
+
+Create a database file from an archive
+```
+smp -D "databse_location" -A "archive"
+```
+
 # Build
 
 ## Linux

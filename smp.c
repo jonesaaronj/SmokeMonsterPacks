@@ -205,7 +205,47 @@ int handle_file(map_vec_file_entry_t* db, int* found, const char* file_in, char*
     free(buffer);
 }
 
-void handle_create_db(FILE* db_file, const char* file, char* folder) {
+void handle_create_db_from_archive(FILE* db_file, const char* archive) {
+    struct archive* a = archive_read_new();
+    archive_read_support_filter_all(a);
+    archive_read_support_format_all(a);
+    int status = archive_read_open_filename(a, archive, 4096);
+    if (status != ARCHIVE_OK) {
+        log_error("%s", archive_error_string(a));
+    }
+    
+    struct archive_entry* entry;
+    while ((status = archive_read_next_header(a, &entry)) == ARCHIVE_OK) {
+        const char* entry_pathname = archive_entry_pathname(entry);
+        int size = archive_entry_size(entry);
+             
+        unsigned char* buffer = malloc(size);
+        archive_read_data(a, buffer, size);
+
+        Hash* hash = get_buffer_hash(buffer, size);
+
+        log_trace("entry: %s", entry_pathname);
+        log_trace("size: %d", size);
+        log_trace("sha256: %s", hash->sha256);
+        log_trace("sha1: %s", hash->sha1);
+        log_trace("md5:  %s", hash->md5);
+        log_trace("crc32: %s", hash->crc32);
+
+        File_entry* file_entry = create_file_entry(entry_pathname, hash);
+        write_entry_to_file(db_file, file_entry);
+        free_file_entry(file_entry);
+        free(buffer);
+    }
+
+    if (status != ARCHIVE_EOF)
+        log_error("%s", archive_error_string(a));
+    
+    status = archive_read_free(a);
+    if (status != ARCHIVE_OK)
+        log_error("%s", archive_error_string(a));
+}
+
+void handle_create_db_from_folder(FILE* db_file, const char* file, char* folder) {
 
     log_trace("folder: %s", folder);
     log_trace("file: %s", file);
@@ -292,22 +332,30 @@ int create_db(const char* file, map_vec_file_entry_t *db) {
 }
 
 void print_usage() {
-    printf("Usage: build_pack -d database_file -i input_directory [-o output_directory] [-a output_archive]\n");
-    printf("input:\n");
+    printf("Usage: \n");
+    printf("       smp -d database_file -i input_directory [-o output_directory] [-a output_archive]\n\n");
+    printf("       smp -D database_file (-P parse_directory | -A parse_archive)\n\n");
+    printf("build pack:\n");
     printf("       -d database_file\n");
     printf("            set location of the database file\n\n");
     printf("       -i input_directory\n");
     printf("            set an input directory\n\n");
-    printf("       -p parse_directory\n");
-    printf("            create a database file from the provided directory\n\n");
     printf("       -o output_directory\n");
     printf("            set an output directory\n\n");
     printf("       -a output_archive\n");
     printf("            set an output archive\n\n");
-    printf("       -l log_file\n");
-    printf("            set log file\n\n");
     printf("       -m missing_file\n");
     printf("            set a missing file\n\n");
+    printf("build db:\n");
+    printf("       -D database_file\n");
+    printf("            set location of the database file\n\n");
+    printf("       -P parse_directory\n");
+    printf("            create a database file from the provided directory\n\n");
+    printf("       -A parse_archive\n");
+    printf("            create a database file from the provided archive\n\n");
+    printf("logging:\n");
+    printf("       -l log_file\n");
+    printf("            set log file\n\n");
     printf("flags:\n");
     printf("       -v  verbose output\n");
     printf("       -vv very verbose output\n");
@@ -322,6 +370,7 @@ int main(int argc, char** argv) {
     vec_init(&input_folders);
     char* database = NULL;
     char* parse_folder = NULL;
+    char* parse_archive = NULL;
     char* output_folder = NULL;
     char* output_archive = NULL;
     char* log = NULL;
@@ -331,16 +380,20 @@ int main(int argc, char** argv) {
     int c;
     opterr = 0;
 
-    while((c = getopt(argc, argv, "i:d:p:o:a:l:m:vqh")) != -1) {
+    while((c = getopt(argc, argv, "i:d:D:P:A:o:a:l:m:vqh")) != -1) {
         switch(c) {
             case 'i':
                 vec_push(&input_folders, optarg);
                 break;
             case 'd':
+            case 'D':
                 database = optarg;
                 break;
-            case 'p':
+            case 'P':
                 parse_folder = optarg;
+                break;
+            case 'A':
+                parse_archive = optarg;
                 break;
             case 'o':
                 output_folder = optarg;
@@ -373,7 +426,7 @@ int main(int argc, char** argv) {
                 break;
         }
     }
-    if (database == NULL || (parse_folder == NULL && input_folders.length == 0)) {
+    if (database == NULL || (parse_archive == NULL && parse_folder == NULL && input_folders.length == 0)) {
         print_usage();
         exit(1);
     }
@@ -385,6 +438,7 @@ int main(int argc, char** argv) {
     }
 
     log_trace("parse_folder = %s", parse_folder);
+    log_trace("parse_archive = %s", parse_archive);
     log_trace("output_folder = %s", output_folder);
     log_trace("output_archive = %s", output_archive);
 
@@ -393,7 +447,7 @@ int main(int argc, char** argv) {
     map_init(&db); 
     int entries_in_db = 0;
 
-    if (database != NULL && parse_folder != NULL) {
+    if (database != NULL && (parse_folder != NULL || parse_archive != NULL)) {
         log_info("Creating database file %s", database);
         db_file = fopen(database, "w");
 
@@ -419,7 +473,7 @@ int main(int argc, char** argv) {
    
             if (parse_folder != NULL) {
                 //log_debug("Process %s as archive.", file);
-                handle_create_db(db_file, file, parse_folder);
+                handle_create_db_from_folder(db_file, file, parse_folder);
             } else if (strcmp(file_ext, ".zip") == 0 ||
                 strcmp(file_ext, ".7z")  == 0 ||
                 strcmp(file_ext, ".rar") == 0) {
@@ -433,15 +487,17 @@ int main(int argc, char** argv) {
         return 0;
     }
 
-    if (input_folders.length > 0) {
+    if (parse_archive != NULL) {
+        handle_create_db_from_archive(db_file, parse_archive);
+    } else if (parse_folder != NULL) {
+        ftw(parse_folder, list, 1);
+    } else if (input_folders.length > 0) {
         int i = 0;
         char* input_folder;
         vec_foreach(&input_folders, input_folder, i) {
             log_debug("Processing input_folder: %s", input_folder);
             ftw(input_folder, list, 1);
         }
-    } else if (parse_folder != NULL) {
-        ftw(parse_folder, list, 1);
     }
 
     if (output_a) {

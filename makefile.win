@@ -1,10 +1,10 @@
-all: build_pack.exe
+all: smp.exe
 
-build_pack.exe: build_pack.o
-	gcc -w -o build_pack.exe build_pack.o
+smp.exe: build_pack.o
+	gcc -w -o smp.exe smp.o
 
-build_pack.o: build_pack.c
-	gcc -w -c build_pack.c .\vec\vec.c .\map\map.c .\mkdir_p\mkdir_p.c -I 'C:\Program Files (x86)\GnuWin32\include\' -I 'C:\Program Files (x86)\GnuWin32\include\glibc\'
+smp.o: smp.c
+	gcc -w -c smp.c file_entry.c .\hash\hash.c .\vec\vec.c .\map\map.c .\mkdir_p\mkdir_p.c -I 'C:\Program Files (x86)\GnuWin32\include\' -I 'C:\Program Files (x86)\GnuWin32\include\glibc\'
 
 clean:
 	rm build_pack.o build_pack.exe
