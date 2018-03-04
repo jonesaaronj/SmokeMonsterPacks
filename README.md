@@ -13,9 +13,11 @@ https://github.com/SmokeMonsterPacks/EverDrive-Packs-Lists-Database
 + UTF-8 support
 
 ## TODO
-* It would be nice to figure out windows support
-* Support more output archive types, maybe, what would anyone want besides 7z and zip?
-* Writing to 7z seems to have some issues that need to be fixed (Reading from 7z seems fine)
+* It would be nice to add windows and osx support.
+  * investigate building in windows with mingw, libarchive, and gnulib. (any advice here is welcome)
+  * investigate replacing linux specific things like ftw.
+* Support more input and output archive types.  What would anyone want besides 7z and zip?
+* Writing very large 7z files breaks on my small pc (AMD E-350, 4gb) but works fine on my server (AMD-FX, 32gb).  Might investigate setting 7z compression dictionary size in libarchive.
 * If you try to verify a zip file with unzip you get Extra-Field errors.  It verifies fine in 7z so this might be an issue with unzip and not libarchive
 
 ## Example usage
