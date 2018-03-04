@@ -270,25 +270,6 @@ void handle_create_db_from_folder(FILE* db_file, const char* file, char* folder)
     free_file_entry(file_entry);
 }
 
-void print_map_vec_file_entry(map_vec_file_entry_t* m, const char* key_label, const char* entry_label, int level){
-    int count = 0;
-    const char* key;
-    map_iter_t iter = map_iter(m);
-    while ((key = map_next(m, &iter))) {
-        vec_file_entry_t* val = map_get(m, key);
-        if (key_label)
-            log(level, "%s: %s", key_label, key);
-        int i;
-        File_entry* file_entry;
-        vec_foreach(val, file_entry, i) {
-            count++;
-            //if (entry_label)
-                //log(level, "%s: %s", entry_label, entry);
-        }
-    }
-    log(level, "Number of entries in database: %d", count);
-}
-
 int create_db(const char* file, map_vec_file_entry_t *db) {
 
     int entries = 0;
@@ -363,6 +344,7 @@ void print_usage() {
 }
 
 int main(int argc, char** argv) {
+
     setlocale(LC_ALL, "");
     log_set_level(LOG_INFO);
 
@@ -375,7 +357,6 @@ int main(int argc, char** argv) {
     char* output_archive = NULL;
     char* log = NULL;
     char* missing = NULL;
-    //int missing = 0;
 
     int c;
     opterr = 0;
@@ -454,8 +435,6 @@ int main(int argc, char** argv) {
     } else if (database != NULL && input_folders.length > 0) {
         log_info("Using database %s", database);
         entries_in_db = create_db(database, &db);
-        if (log_level_is(LOG_TRACE))
-            //print_vec_file_entry_map(&db, "sha256", "entry", LOG_TRACE);
         log_info("Number of entries in database: %d", entries_in_db);
     }
 
@@ -474,9 +453,9 @@ int main(int argc, char** argv) {
             if (parse_folder != NULL) {
                 //log_debug("Process %s as archive.", file);
                 handle_create_db_from_folder(db_file, file, parse_folder);
-            } else if (strcmp(file_ext, ".zip") == 0 ||
-                strcmp(file_ext, ".7z")  == 0 ||
-                strcmp(file_ext, ".rar") == 0) {
+            } else if (strcasecmp(file_ext, ".zip") == 0 ||
+                strcasecmp(file_ext, ".7z")  == 0 ||
+                strcasecmp(file_ext, ".rar") == 0) {
                 log_debug("Process %s as archive.", file);
                 handle_archive(&db, &found, file, output_folder, output_a);
             } else {
@@ -503,10 +482,6 @@ int main(int argc, char** argv) {
     if (output_a) {
         close_archive(output_a);
     }
-
-    //if (missing && log_level_is(LOG_INFO)) {
-    //    print_vec_str_map(&db, "missing sha256", "missing entry", LOG_INFO);
-    //}
 
     if (input_folders.length > 0) {
         int missed = entries_in_db - found;
