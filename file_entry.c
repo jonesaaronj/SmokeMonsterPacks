@@ -36,7 +36,7 @@ void free_file_entry(File_entry* file_entry) {
 }
 
 void write_entry_to_file(FILE* file, File_entry* file_entry) {
-    fprintf(file, "%s\t%s\t%s\t%s\t%s\n", \
+    fprintf(file, "%s\t%s\t%s\t%s\t%s", \
         file_entry->hash->sha256, \
         file_entry->path, \
         file_entry->hash->sha1, \
